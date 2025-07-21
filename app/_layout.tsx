@@ -1,17 +1,38 @@
-import { Slot } from 'expo-router';
-import { WeatherProvider } from '../context/WeatherContext';
-import { UserPreferencesProvider } from '../context/UserPreferencesContext';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import React, { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { WeatherProvider } from "@/context/WeatherContext";
+import { UserPreferencesProvider } from "@/context/UserPreferencesContext";
 
-/**
- * Root layout for the Heat Alert app
- * Wraps all routes with global providers
- */
-export default function RootLayout() {
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+SplashScreen.preventAutoHideAsync();
+
+const queryClient = new QueryClient();
+
+function RootLayoutNav() {
   return (
-    <UserPreferencesProvider>
-      <WeatherProvider>
-        <Slot /> {/* Renders the current active route (e.g., tabs/index, tabs/alerts) */}
-      </WeatherProvider>
-    </UserPreferencesProvider>
+    <Stack screenOptions={{ headerBackTitle: "Back" }}>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    </Stack>
+  );
+}
+
+export default function RootLayout() {
+  useEffect(() => {
+    SplashScreen.hideAsync();
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <UserPreferencesProvider>
+        <WeatherProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <RootLayoutNav />
+          </GestureHandlerRootView>
+        </WeatherProvider>
+      </UserPreferencesProvider>
+    </QueryClientProvider>
   );
 }
