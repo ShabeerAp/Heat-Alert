@@ -1,35 +1,74 @@
-import React from 'react';
-import { COLORS } from '../constants/colors';
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { AlertTriangle } from "lucide-react-native";
+import Colors from "@/constants/colors";
+import { calculateHeatIndex, getHeatIndexCategory } from "@/utils/weatherUtils";
 
 interface HeatIndexCardProps {
-  heatIndex: number;
-  feelsLike: number;
-  riskLevel: 'Safe' | 'Warning' | 'Danger';
+  temperature: number;
+  humidity: number;
 }
 
-const getColor = (risk: string) => {
-  switch (risk) {
-    case 'Danger': return COLORS.danger;
-    case 'Warning': return COLORS.warning;
-    default: return COLORS.safe;
-  }
-};
+export default function HeatIndexCard({ temperature, humidity }: HeatIndexCardProps) {
+  const heatIndex = calculateHeatIndex(temperature, humidity);
+  const { category, color, message } = getHeatIndexCategory(heatIndex);
 
-const HeatIndexCard: React.FC<HeatIndexCardProps> = ({ heatIndex, feelsLike, riskLevel }) => {
   return (
-    <div style={{
-      padding: '1rem',
-      borderRadius: '1rem',
-      backgroundColor: getColor(riskLevel),
-      color: '#fff',
-      marginBottom: '1rem',
-      boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-    }}>
-      <h3>Heat Index: {heatIndex}°C</h3>
-      <p>Feels Like: {feelsLike}°C</p>
-      <strong>Risk Level: {riskLevel}</strong>
-    </div>
+    <View style={[styles.card, { backgroundColor: color }]}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Heat Index</Text>
+        {category !== "Normal" && (
+          <AlertTriangle size={20} color="#fff" />
+        )}
+      </View>
+      
+      <Text style={styles.heatIndexValue}>
+        {Math.round(heatIndex)}°
+      </Text>
+      
+      <Text style={styles.category}>
+        {category}
+      </Text>
+      
+      <Text style={styles.message}>
+        {message}
+      </Text>
+    </View>
   );
-};
+}
 
-export default HeatIndexCard;
+const styles = StyleSheet.create({
+  card: {
+    borderRadius: 12,
+    padding: 16,
+    marginVertical: 16,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  title: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  heatIndexValue: {
+    color: "#fff",
+    fontSize: 36,
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  category: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  message: {
+    color: "#fff",
+    fontSize: 14,
+    lineHeight: 20,
+  },
+});
