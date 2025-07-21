@@ -1,33 +1,125 @@
-// types/weather.ts
-
-export interface CurrentWeather {
-  temperature: number; // actual temperature
-  feelsLike: number;
-  humidity: number;
-  uvIndex: number;
-  heatIndex: number;
-  condition: string; // e.g., 'Clear', 'Cloudy', 'Rainy'
-  icon: string; // icon URL or code
-  timestamp: string;
+export interface WeatherData {
+  coord: {
+    lon: number;
+    lat: number;
+  };
+  weather: {
+    id: number;
+    main: string;
+    description: string;
+    icon: string;
+  }[];
+  base: string;
+  main: {
+    temp: number;
+    feels_like: number;
+    temp_min: number;
+    temp_max: number;
+    pressure: number;
+    humidity: number;
+  };
+  visibility: number;
+  wind: {
+    speed: number;
+    deg: number;
+    gust?: number;
+  };
+  clouds: {
+    all: number;
+  };
+  dt: number;
+  sys: {
+    type: number;
+    id: number;
+    country: string;
+    sunrise: number;
+    sunset: number;
+  };
+  timezone: number;
+  id: number;
+  name: string;
+  cod: number;
 }
 
-export interface DailyForecast {
-  date: string;
-  high: number;
-  low: number;
-  condition: string;
-  uvIndex: number;
-  heatIndex: number;
-  icon: string;
+export interface LocationSearchResult {
+  id: number;
+  name: string;
+  coord: {
+    lat: number;
+    lon: number;
+  };
+  main: {
+    temp: number;
+    feels_like: number;
+    temp_min: number;
+    temp_max: number;
+    pressure: number;
+    humidity: number;
+  };
+  dt: number;
+  wind: {
+    speed: number;
+    deg: number;
+  };
+  sys: {
+    country: string;
+  };
+  rain: any;
+  snow: any;
+  clouds: {
+    all: number;
+  };
+  weather: {
+    id: number;
+    main: string;
+    description: string;
+    icon: string;
+  }[];
 }
 
-export interface LocationWeatherData {
-  locationId: string;
-  city: string;
-  country: string;
-  lat: number;
-  lon: number;
-  current: CurrentWeather;
-  forecast: DailyForecast[];
-  lastUpdated: string;
+export interface ForecastData {
+  list: {
+    dt: number;
+    main: {
+      temp: number;
+      feels_like: number;
+      temp_min: number;
+      temp_max: number;
+      pressure: number;
+      humidity: number;
+    };
+    weather: {
+      id: number;
+      main: string;
+      description: string;
+      icon: string;
+    }[];
+    clouds: {
+      all: number;
+    };
+    wind: {
+      speed: number;
+      deg: number;
+      gust?: number;
+    };
+    visibility: number;
+    pop: number;
+    sys: {
+      pod: string;
+    };
+    dt_txt: string;
+  }[];
+  city: {
+    id: number;
+    name: string;
+    coord: {
+      lat: number;
+      lon: number;
+    };
+    country: string;
+    population: number;
+    timezone: number;
+    sunrise: number;
+    sunset: number;
+  };
 }
